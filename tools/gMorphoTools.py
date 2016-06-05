@@ -1,8 +1,7 @@
 import networkx as nx
 import numpy as np
 import tools.drawTools as dt
-import networkx as nx
-
+import tools.binaryOperators as bo
 ###########################
 #Edges creations functions#
 ###########################
@@ -51,60 +50,73 @@ def small(G, N, n):
 #Morphological operations tools#
 ################################
 
-def simpleDilation(Gin, stuffToDraw = None):
+def simpleDilation(Gin, pos = None):
+    '''
+    Performs a simple dilatation. If a position (attribute from graph) is given, it will directly display the result
+    '''
+
     Gout = Gin.copy()
     for v in nx.nodes_iter(Gin):
         for vv in nx.all_neighbors(Gin, v):
             if Gin.node[v]['class'] < Gin.node[vv]['class']:
                 Gout.node[v]['class'] = Gin.node[vv]['class']
-    if stuffToDraw:
-        dt.drawFromClasses(Gout, stuffToDraw[0], stuffToDraw[1])
+    if pos:
+        dt.drawFromClasses(Gout, pos)
     return Gout
 
-def dilatation(G, order, stuffToDraw = None):
+def dilatation(G, order, pos = None):
     '''
-    Enables multiple dilatations in a row
+    Enables multiple dilatations in a row. 
+    If a position (attribute from graph) is given, it will directly display the result
     '''
+
     for k in range(1, order + 1):
-        G = simpleDilation(G, stuffToDraw)
+        G = simpleDilation(G, pos)
     return G
 
-def simpleErosion(Gin, stuffToDraw = None):
+def simpleErosion(Gin, pos = None):
+    '''
+    Performs a simple erosion
+    If a position (attribute from graph) is given, it will directly display the result
+    '''
+
     Gout = Gin.copy()
     for v in nx.nodes_iter(Gin):
         for vv in nx.all_neighbors(Gin, v):
             if Gin.node[v]['class'] > Gin.node[vv]['class']:
                 Gout.node[v]['class'] = Gin.node[vv]['class']
-    if stuffToDraw:
-        dt.drawFromClasses(Gout, stuffToDraw[0], stuffToDraw[1])
+    if pos:
+        dt.drawFromClasses(Gout, pos)
     return Gout
 
-def erosion(G, order, stuffToDraw = None):
+def erosion(G, order, pos = None):
     '''
     Enable multiple erosions in a row
+    If a position (attribute from graph) is given, it will directly display the result
     '''
+
     for k in range(1, order + 1):
-        G = simpleErosion(G, stuffToDraw)
+        G = simpleErosion(G, pos)
     return G
 
-def closing(G, order, stuffToDraw = None):
+def closing(G, order, pos = None):
     '''
     Using the fact that a closing in the composition of a dilatation by an erosion
     '''
     G = dilatation(G, order)
     G = erosion(G, order)
-    if stuffToDraw:
-        dt.drawFromClasses(G, stuffToDraw[0], stuffToDraw[1])
+    if pos:
+        dt.drawFromClasses(G, pos)
     return G
 
-def opening(G, order, stuffToDraw = None):
+def opening(G, order, pos = None):
     '''
     Using the fact that an opening is tha composition of an erosion by a dilatation
     '''
     G = erosion(G, order)
     G = dilatation(G, order)
-    if stuffToDraw:
-        dt.drawFromClasses(G, stuffToDraw[0], stuffToDraw[1])
+    if pos:
+        dt.drawFromClasses(G, pos)
     return G
 
 def distGraph(Gin, fromNodeNumber, N):
@@ -133,7 +145,7 @@ def distGraph(Gin, fromNodeNumber, N):
     
     return Gout
 
-def skeletize(Gin, N, nodesToSkeletize, otherNodes = None):
+def skeletizeRaw(Gin, N, nodesToSkeletize, otherNodes = None):
     '''
     This will compute and return the skeleton of a binary graph Gin
     This is done by computing the distance function from our element to the background nodes and then by finding local extremum in distance graph. 
@@ -153,5 +165,4 @@ def skeletize(Gin, N, nodesToSkeletize, otherNodes = None):
             Gout.node[v]['class'] = 1
     
     return Gout
-
 
