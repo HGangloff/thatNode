@@ -2,6 +2,8 @@ import networkx as nx
 import numpy as np
 import drawTools as dt
 import networkx as nx
+import time
+from collections import deque
 
 ###########################
 #Edges creations functions#
@@ -21,10 +23,12 @@ def oneOfTwo(N):
     classes = {i:j for i in range(0, N) for j in range(0, 2) if i % 2 == j}
     return classes
 #One node vs all :
-def oneVAll(N):
+def oneVAll(N, thatNode = None):
+    if not thatNode:
+        thatNode = N // 2
     classes = {}
     for i in range(0, N):
-        if i == N // 2:
+        if i == thatNode:
             classes[i] = 1
         else:
             classes[i] = 0
@@ -93,3 +97,25 @@ def opening(Gin, order, stuffToDraw = None):
     if stuffToDraw:
         dt.drawFromClasses(Gin, stuffToDraw[0], stuffToDraw[1])
     return Gin
+
+def computeDistGraph(Gin, fromNodeNumber, N):
+    '''
+    Based on Dijkstra algorithm. Assuming that 2 neighbor nodes have a distance = 1
+    Returns a decimal graph from a binary graph
+    '''
+    Gout = Gin.copy()
+    distGout = [float("inf") for N in range(0, N)]
+    distGout[fromNodeNumber] = 0
+    thatNodeList = {v:distGout[v] for v in nx.nodes_iter(Gin)}
+    while thatNodeList:
+        u = min(thatNodeList, key = thatNodeList.get)
+        thatNodeList.pop(u, None)
+        for v in nx.all_neighbors(Gin, u):
+            alt = distGout[u] + 1 #change this line to extend to weighted and other graphs
+            if alt < distGout[v]:
+                distGout[v] = alt
+                thatNodeList[v] = alt
+    
+    distGout = {n:distGout[n] for n in range(0, N)}
+    nx.set_node_attributes(Gout, 'dist', distGout)
+    return Gout

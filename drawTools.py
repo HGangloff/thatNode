@@ -33,12 +33,32 @@ def drawVoronoi(G, classes, pos):
     #nx.draw_networkx(G, pos)
     plt.show()
 
-def drawFromClasses(G, pos, classes): 
+def drawFromClasses(G, pos): 
     classes = nx.get_node_attributes(G, 'class')
     black_nodes = [k for k, v in classes.items() if v == 0]
     white_nodes = [k for k, v in classes.items() if v == 1]
     nx.draw_networkx(G, pos, with_labels = False)
     nx.draw_networkx_nodes(G, pos, black_nodes, node_color = '0.2', linewidths = 0)
     nx.draw_networkx_nodes(G, pos, white_nodes, node_color = 'w', linewidths = 0)
+    nx.draw_networkx_edges(G, pos, edge_color = 'k')
+    plt.show()
+
+def drawDistanceGraph(G, pos):
+    dist = nx.get_node_attributes(G, 'dist')
+    distRange = [v for k, v in dist.items() if v != float("inf")]
+    distRange = list(set(distRange)) #kill duplicates
+    nx.draw_networkx(G, pos, with_labels = False)
+    #Draw the ones at inf distance :
+    thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == float("inf")]
+    nx.draw_networkx_nodes(G, pos, thatNodes, node_color = 'r', linewidths = 0)
+    #Draw normal nodes with shades of grey according to the distance
+    for i in range(1, len(distRange)):
+        thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == i]
+        nx.draw_networkx_nodes(G, pos, thatNodes, node_color = str(1 - (i * 1 / len(distRange))), linewidths = 0)
+    #Draw the start node
+    #A list to be able to treate distances from a region
+    thatStartNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == 0]
+    nx.draw_networkx_nodes(G, pos, thatStartNodes, node_color = 'w', linewidths = 2)
+
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()

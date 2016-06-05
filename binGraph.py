@@ -13,13 +13,17 @@ pos = nx.random_layout(G)
 nx.set_node_attributes(G, 'pos', pos)
 
 #We will draw the edges according to k nearest neightbors algorithms
-G = gmt.knn(G, 0.1)
+G = gmt.knn(G, 0.08)
 
-classes = gmt.small(G, N, 10)
+#/!\ put a number that can match with N :
+#classes = gmt.small(G, N, 10)
+classes = gmt.oneVAll(N, 1)
 nx.set_node_attributes(G, 'class', classes)
 
-dt.drawFromClasses(G, pos, classes)
+dt.drawFromClasses(G, pos)
 
 #G = gmt.dilatation(G, 3, [pos, classes])
 #G = gmt.erosion(G, 3, [pos, classes])
-G = gmt.closing(G, 5, [pos, classes])
+#G = gmt.closing(G, 5, [pos, classes])
+Gdist = gmt.computeDistGraph(G, 1, N)
+dt.drawDistanceGraph(Gdist, pos)
