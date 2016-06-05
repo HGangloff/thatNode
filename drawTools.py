@@ -34,6 +34,9 @@ def drawVoronoi(G, classes, pos):
     plt.show()
 
 def drawFromClasses(G, pos): 
+    '''
+    Draws a binary graph with 2 different class in the 'class' attributes 
+    '''
     classes = nx.get_node_attributes(G, 'class')
     black_nodes = [k for k, v in classes.items() if v == 0]
     white_nodes = [k for k, v in classes.items() if v == 1]
@@ -44,6 +47,9 @@ def drawFromClasses(G, pos):
     plt.show()
 
 def drawDistanceGraph(G, pos):
+    '''
+    Given a decimal graph (with attribute 'dist') it draws the distance graph using nodes with dist = 0 as basis
+    '''
     dist = nx.get_node_attributes(G, 'dist')
     distRange = [v for k, v in dist.items() if v != float("inf")]
     distRange = list(set(distRange)) #kill duplicates
@@ -55,7 +61,7 @@ def drawDistanceGraph(G, pos):
     for i in range(1, len(distRange)):
         thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == i]
         nx.draw_networkx_nodes(G, pos, thatNodes, node_color = str(1 - (i * 1 / len(distRange))), linewidths = 0)
-    #Draw the start node
+    #Draw the starting nodes
     #A list to be able to handle distances from a region
     thatStartNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == 0]
     nx.draw_networkx_nodes(G, pos, thatStartNodes, node_color = 'y', linewidths = 0)

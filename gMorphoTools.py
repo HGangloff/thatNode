@@ -54,7 +54,6 @@ def small(G, N, n):
 ################################
 
 def simpleDilation(Gin, stuffToDraw = None):
-    #Careful with the copy:
     Gout = Gin.copy()
     for v in nx.nodes_iter(Gin):
         for vv in nx.all_neighbors(Gin, v):
@@ -64,10 +63,13 @@ def simpleDilation(Gin, stuffToDraw = None):
         dt.drawFromClasses(Gout, stuffToDraw[0], stuffToDraw[1])
     return Gout
 
-def dilatation(Gin, order, stuffToDraw = None):
+def dilatation(G, order, stuffToDraw = None):
+    '''
+    Enables multiple dilatations in a row
+    '''
     for k in range(1, order + 1):
-        Gin = simpleDilation(Gin, stuffToDraw)
-    return Gin
+        G = simpleDilation(G, stuffToDraw)
+    return G
 
 def simpleErosion(Gin, stuffToDraw = None):
     Gout = Gin.copy()
@@ -79,24 +81,33 @@ def simpleErosion(Gin, stuffToDraw = None):
         dt.drawFromClasses(Gout, stuffToDraw[0], stuffToDraw[1])
     return Gout
 
-def erosion(Gin, order, stuffToDraw = None):
+def erosion(G, order, stuffToDraw = None):
+    '''
+    Enable multiple erosions in a row
+    '''
     for k in range(1, order + 1):
-        Gin = simpleErosion(Gin, stuffToDraw)
-    return Gin
+        G = simpleErosion(G, stuffToDraw)
+    return G
 
-def closing(Gin, order, stuffToDraw = None):
-    Gin = dilatation(Gin, order)
-    Gin = erosion(Gin, order)
+def closing(G, order, stuffToDraw = None):
+    '''
+    Using the fact that a closing in the composition of a dilatation by an erosion
+    '''
+    G = dilatation(G, order)
+    G = erosion(G, order)
     if stuffToDraw:
-        dt.drawFromClasses(Gin, stuffToDraw[0], stuffToDraw[1])
-    return Gin
+        dt.drawFromClasses(G, stuffToDraw[0], stuffToDraw[1])
+    return G
 
-def opening(Gin, order, stuffToDraw = None):
-    Gin = erosion(Gin, order)
-    Gin = dilatation(Gin, order)
+def opening(G, order, stuffToDraw = None):
+    '''
+    Using the fact that an opening is tha composition of an erosion by a dilatation
+    '''
+    G = erosion(G, order)
+    G = dilatation(G, order)
     if stuffToDraw:
-        dt.drawFromClasses(Gin, stuffToDraw[0], stuffToDraw[1])
-    return Gin
+        dt.drawFromClasses(G, stuffToDraw[0], stuffToDraw[1])
+    return G
 
 def distGraph(Gin, fromNodeNumber, N):
     '''
