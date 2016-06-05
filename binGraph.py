@@ -17,14 +17,11 @@ G = gmt.knn(G, 0.1)
 
 #/!\ put a number that can match with N :
 classes = gmt.small(G, N, 50)
-#classes = gmt.oneVAll(N, 1)
 nx.set_node_attributes(G, 'class', classes)
-class1 = [k for k,v in classes.items() if v == 1]
+foreground = [k for k,v in classes.items() if v == 1]
+background = [k for k,v in classes.items() if v == 0]
 
 dt.drawFromClasses(G, pos)
 
-#G = gmt.dilatation(G, 3, [pos, classes])
-#G = gmt.erosion(G, 3, [pos, classes])
-#G = gmt.closing(G, 5, [pos, classes])
-Gdist = gmt.computeDistGraph(G, class1, N)
-dt.drawDistanceGraph(Gdist, pos)
+GSkeletized = gmt.skeletize(G, N, foreground, background)
+dt.drawFromClasses(GSkeletized, pos)

@@ -98,10 +98,12 @@ def opening(Gin, order, stuffToDraw = None):
         dt.drawFromClasses(Gin, stuffToDraw[0], stuffToDraw[1])
     return Gin
 
-def computeDistGraph(Gin, fromNodeNumber, N):
+def distGraph(Gin, fromNodeNumber, N):
     '''
     Based on Dijkstra algorithm. Assuming that 2 neighbor nodes have a distance = 1
-    Returns a decimal graph from a binary graph
+    fromNodeNumber is a list!
+    N is the size of the graph
+    Returns a decimal graph (same graph but with attribute 'dist' in fact) from a binary graph
     '''
     Gout = Gin.copy()
     distGout = [float("inf") for N in range(0, N)]
@@ -119,4 +121,28 @@ def computeDistGraph(Gin, fromNodeNumber, N):
     
     distGout = {n:distGout[n] for n in range(0, N)}
     nx.set_node_attributes(Gout, 'dist', distGout)
+    
     return Gout
+
+def skeletize(Gin, N, nodesToSkeletize, otherNodes = None):
+    '''
+    This will compute and return the skeleton of a binary graph Gin
+    This is done by computing the distance function from our element to the background nodes and then by finding local extremum in distance graph. 
+    If background nodes are given they are computed here.
+    '''
+    if not otherNodes:
+        otherNodes = [n for n in range(0, N) if (n not in nodesToSkeletize)]
+    
+    GDist = distGraph(Gin, otherNodes, N)
+    Gout = Gin.copy()
+    
+    #Find local extremum in GDist and only them in Gout
+    for v in nx.nodes_iter(Gout):
+        Gout.node[v]['class'] = 0
+    for v in nodesToSkeletize:
+        if ([True for x in nx.all_neighbors(GDist, v)] == [True for x in nx.all_neighbors(GDist, v) if (GDist.node[v]['dist'] >= GDist.node[x]['dist'])]):
+            Gout.node[v]['class'] = 1
+    
+    return Gout
+
+

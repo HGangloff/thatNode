@@ -39,7 +39,7 @@ def drawFromClasses(G, pos):
     white_nodes = [k for k, v in classes.items() if v == 1]
     nx.draw_networkx(G, pos, with_labels = False)
     nx.draw_networkx_nodes(G, pos, black_nodes, node_color = '0.2', linewidths = 0)
-    nx.draw_networkx_nodes(G, pos, white_nodes, node_color = 'w', linewidths = 0)
+    nx.draw_networkx_nodes(G, pos, white_nodes, node_color = 'y', linewidths = 0)
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
 
@@ -56,9 +56,9 @@ def drawDistanceGraph(G, pos):
         thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == i]
         nx.draw_networkx_nodes(G, pos, thatNodes, node_color = str(1 - (i * 1 / len(distRange))), linewidths = 0)
     #Draw the start node
-    #A list to be able to treate distances from a region
+    #A list to be able to handle distances from a region
     thatStartNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == 0]
-    nx.draw_networkx_nodes(G, pos, thatStartNodes, node_color = 'w', linewidths = 2)
+    nx.draw_networkx_nodes(G, pos, thatStartNodes, node_color = 'y', linewidths = 0)
 
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
