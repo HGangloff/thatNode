@@ -105,7 +105,8 @@ def computeDistGraph(Gin, fromNodeNumber, N):
     '''
     Gout = Gin.copy()
     distGout = [float("inf") for N in range(0, N)]
-    distGout[fromNodeNumber] = 0
+    for v in fromNodeNumber:
+        distGout[v] = 0
     thatNodeList = {v:distGout[v] for v in nx.nodes_iter(Gin)}
     while thatNodeList:
         u = min(thatNodeList, key = thatNodeList.get)
