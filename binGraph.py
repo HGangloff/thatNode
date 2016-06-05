@@ -1,7 +1,7 @@
 import numpy as np
 import networkx as nx
-import drawTools as dt
-import gMorphoTools as gmt
+import tools.drawTools as dt
+import tools.gMorphoTools as gmt
 
 N = 500
 
