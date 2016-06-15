@@ -2,6 +2,12 @@ import networkx as nx
 import numpy as np
 import tools.drawTools as dt
 import tools.binaryOperators as bo
+###########
+#Exception#
+###########
+class BreakTwoLoops( Exception ):
+    pass
+
 ###########################
 #Edges creations functions#
 ###########################
@@ -14,13 +20,30 @@ def knn(G, k):
 #################################
 #Binary class creation functions#
 #################################
-
-#Equal class distribution
-def oneOfTwo(N):
+def oneOfTwo(G, N):
+    '''
+    Create a binary graph with 50% nodes in one class and 50% nodes in another
+    G is the graph
+    N is the size of the graph
+    
+    Returns the graph with a new attribute class.
+    Also returns 2 lists with the nodes numbers belonging to each class
+    '''
     classes = {i:j for i in range(0, N) for j in range(0, 2) if i % 2 == j}
-    return classes
-#One node vs all :
-def oneVAll(N, thatNode = None):
+    nx.set_node_attributes(G, 'class', classes)
+    foreground = [k for k,v in classes.items() if v == 1]
+    background = [k for k,v in classes.items() if v == 0]
+    return (G, foreground, background)
+
+def oneVAll(G, N, thatNode = None):
+    '''
+    Create a binary graph : only one node is in the 'opposite' class
+    G is the graph
+    N the size of the graph
+    thatNode allows the user to choose which node is the lonely one
+    Returns the graph with a new attribute class.
+    Also returns 2 lists with the nodes numbers belonging to each class
+    '''
     if not thatNode:
         thatNode = N // 2
     classes = {}
@@ -29,20 +52,50 @@ def oneVAll(N, thatNode = None):
             classes[i] = 1
         else:
             classes[i] = 0
-    return classes
-#Small group (this requires a graph with edges)
-def small(G, N, n):
+    nx.set_node_attributes(G, 'class', classes)
+    foreground = [k for k,v in classes.items() if v == 1]
+    background = [k for k,v in classes.items() if v == 0]
+    return (G, foreground, background)
+
+def connectedComponents(G, N, number, size):
+    '''
+    Create some connected components in a binary graph.
+    G is the graph
+    N is the size of the graph
+    number is the nb of connected component to create
+    size is the size of the connected component
+
+    Returns the graph with a new attribute class.
+    Also returns 2 lists with the nodes numbers belonging to each class
+
+    Each different connected component are created with different class value
+    But then all class values != 0 are set to 1 (binary graph)
+    '''
     classes = {N:0 for N in range(0, N)}
-    classes[N // 2] = 1
-    i = 1
-    while i < n:
-        for v in nx.nodes_iter(G):
-            if classes[v] == 1:
-                for vv in nx.all_neighbors(G, v):
-                    if (i < n) and (classes[vv] != 1):
-                        classes[vv] = 1
-                        i += 1
-    return classes
+    n = 1
+    while n <= number:
+        classes[n * (N // number) - 1] = n
+        i = 1
+        try:
+            for v in nx.nodes_iter(G):
+                if classes[v] == n:
+                    for vv in nx.all_neighbors(G, v):
+                        if classes[vv] not in range(1, n):
+                            classes[vv] = n
+                            i += 1
+                            if i == size:
+                                raise BreakTwoLoops
+        except BreakTwoLoops:
+            pass
+        n += 1
+    
+    for k, v in classes.items():
+        if v > 0:
+            classes[k] = 1
+    nx.set_node_attributes(G, 'class', classes)
+    foreground = [k for k,v in classes.items() if v == 1]
+    background = [k for k,v in classes.items() if v == 0]
+    return (G, foreground, background)
 
     
 
