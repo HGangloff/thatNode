@@ -19,7 +19,7 @@ nx.set_node_attributes(G, 'pos', pos)
 G = gmt.knn(G, 0.2)
 
 #/!\ put a number that can match with N :
-G, foreground, background = gmt.connectedComponents(G, N, 2, 5)
+G, foreground, background = gmt.connectedComponents(G, N, 5, 1)
 dt.drawFromClasses(G, pos)
 dt.drawDistanceGraph(gmt.distGraph(G, foreground, N), pos)
 #GSkeletized = gmt.skeletizeRaw(G, N, foreground, background)

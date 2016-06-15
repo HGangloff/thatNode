@@ -76,17 +76,18 @@ def connectedComponents(G, N, number, size):
     while n <= number:
         classes[n * (N // number) - 1] = n
         i = 1
-        try:
-            for v in nx.nodes_iter(G):
-                if classes[v] == n:
-                    for vv in nx.all_neighbors(G, v):
-                        if classes[vv] not in range(1, n):
-                            classes[vv] = n
-                            i += 1
-                            if i == size:
-                                raise BreakTwoLoops
-        except BreakTwoLoops:
-            pass
+        if i < size:
+            try:
+                for v in nx.nodes_iter(G):
+                    if classes[v] == n:
+                        for vv in nx.all_neighbors(G, v):
+                            if classes[vv] not in range(1, n):
+                                classes[vv] = n
+                                i += 1
+                                if i == size:
+                                    raise BreakTwoLoops
+            except BreakTwoLoops:
+                pass
         n += 1
     
     for k, v in classes.items():
