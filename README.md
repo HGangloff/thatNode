@@ -3,5 +3,6 @@ thatNode is a project that aims to implement algorithms from mathematical morpho
 
 thatNode is based on the research paper : GRAPHS AND MATHEMATICAL MORPHOLOGY by Luc VINCENT (April 1988)
 
+Keywords : Mathematical Morphology, Graphs, Python, Networkx
 
-Written in Python
+Operators implemented so far : erosion, dilatation, opening, closing, skeleton
