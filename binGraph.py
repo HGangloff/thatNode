@@ -14,13 +14,7 @@ G = nx.empty_graph(N)
 
 pos = nx.random_layout(G)
 nx.set_node_attributes(G, 'pos', pos)
-
 #We will draw the edges according to k nearest neightbors algorithms
-G = gmt.knn(G, 0.2)
-
-#/!\ put a number that can match with N :
-G, foreground, background = gmt.connectedComponents(G, N, 5, 1)
+G = gmt.delaunay(G)
+G, foreground, background = gmt.connectedComponents(G, N, 2, 5)
 dt.drawFromClasses(G, pos)
-dt.drawDistanceGraph(gmt.distGraph(G, foreground, N), pos)
-#GSkeletized = gmt.skeletizeRaw(G, N, foreground, background)
-#dt.drawFromClasses(GSkeletized, pos)

@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import tools.drawTools as dt
 import tools.binaryOperators as bo
+from scipy.spatial import Delaunay
 ###########
 #Exception#
 ###########
@@ -16,6 +17,38 @@ def knn(G, k):
         for vv in nx.nodes_iter(G):
             if v != vv and (G.node[vv]['pos'][0] - G.node[v]['pos'][0])**2 + (G.node[vv]['pos'][1] - G.node[v]['pos'][1])**2 < k**2:
                 G.add_edge(v, vv)
+    return G
+
+def delaunay(G):
+    '''
+    Creates and return the graph with edges corresponding to the Delaunay Triangulation of the graph
+    G is the graph without nodes, with the position of the nodes as 'pos' attribute
+
+    Returns G with new edges correspondig to Delaunay triangulation
+    (this implementation is quite heavy)
+    '''
+    #scipy function needs a list of coordinates tocompute Delaunay:
+    points = [[G.node[v]['pos'][0], G.node[v]['pos'][1]] for v in nx.nodes_iter(G)]
+    points = np.array(points)
+    tri = Delaunay(points)
+    print(points[tri.simplices])
+    for i in points[tri.simplices]:
+        for j, coords in enumerate(i):
+            if j == 0:
+                for v in nx.nodes_iter(G):
+                    for vv in nx.nodes_iter(G):
+                        if (G.node[v]['pos'][0] == coords[0]) and (G.node[v]['pos'][1] == coords[1]) and (G.node[vv]['pos'][0] == i[1][0]) and (G.node[vv]['pos'][1] == i[1][1]):
+                            G.add_edge(v, vv)
+            if j == 1:
+                for v in nx.nodes_iter(G):
+                    for vv in nx.nodes_iter(G):
+                        if (G.node[v]['pos'][0] == coords[0]) and (G.node[v]['pos'][1] == coords[1]) and (G.node[vv]['pos'][0] == i[2][0]) and (G.node[vv]['pos'][1] == i[2][1]):
+                            G.add_edge(v, vv)
+            if j == 2:
+                for v in nx.nodes_iter(G):
+                    for vv in nx.nodes_iter(G):
+                        if (G.node[v]['pos'][0] == coords[0]) and (G.node[v]['pos'][1] == coords[1]) and (G.node[vv]['pos'][0] == i[1][0]) and (G.node[vv]['pos'][0] == i[1][1]):
+                            G.add_edge(v, vv)
     return G
 #################################
 #Binary class creation functions#
