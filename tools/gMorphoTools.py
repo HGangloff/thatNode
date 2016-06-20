@@ -143,9 +143,9 @@ def connectedComponents(G, number, size):
 #Morphological operations tools#
 ################################
 
-def simpleDilation(Gin, pos = None):
+def simpleDilation(Gin, draw = None):
     '''
-    Performs a simple dilatation. If a position (attribute from graph) is given, it will directly display the result
+    Performs a simple dilatation. If draw is True, it will directly display the result
     '''
 
     Gout = Gin.copy()
@@ -153,24 +153,24 @@ def simpleDilation(Gin, pos = None):
         for vv in nx.all_neighbors(Gin, v):
             if Gin.node[v]['class'] < Gin.node[vv]['class']:
                 Gout.node[v]['class'] = Gin.node[vv]['class']
-    if pos:
-        dt.drawFromClasses(Gout, pos)
+    if draw:
+        dt.drawFromClasses(Gout)
     return Gout
 
-def dilatation(G, order, pos = None):
+def dilatation(G, order, draw = None):
     '''
     Enables multiple dilatations in a row. 
-    If a position (attribute from graph) is given, it will directly display the result
+    If draw is given, it will directly display the result
     '''
 
     for k in range(1, order + 1):
-        G = simpleDilation(G, pos)
+        G = simpleDilation(G, draw)
     return G
 
-def simpleErosion(Gin, pos = None):
+def simpleErosion(Gin, draw = None):
     '''
     Performs a simple erosion
-    If a position (attribute from graph) is given, it will directly display the result
+    If draw is given, it will directly display the result
     '''
 
     Gout = Gin.copy()
@@ -178,38 +178,38 @@ def simpleErosion(Gin, pos = None):
         for vv in nx.all_neighbors(Gin, v):
             if Gin.node[v]['class'] > Gin.node[vv]['class']:
                 Gout.node[v]['class'] = Gin.node[vv]['class']
-    if pos:
-        dt.drawFromClasses(Gout, pos)
+    if draw:
+        dt.drawFromClasses(Gout)
     return Gout
 
-def erosion(G, order, pos = None):
+def erosion(G, order, draw = None):
     '''
     Enable multiple erosions in a row
-    If a position (attribute from graph) is given, it will directly display the result
+    If draw is given, it will directly display the result
     '''
 
     for k in range(1, order + 1):
-        G = simpleErosion(G, pos)
+        G = simpleErosion(G, draw)
     return G
 
-def closing(G, order, pos = None):
+def closing(G, order, draw = None):
     '''
     Using the fact that a closing in the composition of a dilatation by an erosion
     '''
     G = dilatation(G, order)
     G = erosion(G, order)
-    if pos:
-        dt.drawFromClasses(G, pos)
+    if draw:
+        dt.drawFromClasses(G, draw)
     return G
 
-def opening(G, order, pos = None):
+def opening(G, order, draw = None):
     '''
     Using the fact that an opening is tha composition of an erosion by a dilatation
     '''
     G = erosion(G, order)
     G = dilatation(G, order)
-    if pos:
-        dt.drawFromClasses(G, pos)
+    if draw:
+        dt.drawFromClasses(G, draw)
     return G
 
 def distGraph(Gin, fromNodeNumber):
@@ -249,7 +249,7 @@ def skeletizeRaw(Gin, nodesToSkeletize, otherNodes = None):
     if not otherNodes:
         otherNodes = [n for n in range(0, N) if (n not in nodesToSkeletize)]
     
-    GDist = distGraph(Gin, otherNodes, N)
+    GDist = distGraph(Gin, otherNodes)
     Gout = Gin.copy()
     
     #Find local extremum in GDist and only them in Gout
