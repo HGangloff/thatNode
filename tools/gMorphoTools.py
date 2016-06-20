@@ -25,30 +25,19 @@ def delaunay(G):
     G is the graph without nodes, with the position of the nodes as 'pos' attribute
 
     Returns G with new edges correspondig to Delaunay triangulation
-    (this implementation is quite heavy)
+    (this implementation costs a lot)
     '''
     #scipy function needs a list of coordinates tocompute Delaunay:
     points = [[G.node[v]['pos'][0], G.node[v]['pos'][1]] for v in nx.nodes_iter(G)]
     points = np.array(points)
     tri = Delaunay(points)
-    print(points[tri.simplices])
     for i in points[tri.simplices]:
-        for j, coords in enumerate(i):
-            if j == 0:
-                for v in nx.nodes_iter(G):
-                    for vv in nx.nodes_iter(G):
-                        if (G.node[v]['pos'][0] == coords[0]) and (G.node[v]['pos'][1] == coords[1]) and (G.node[vv]['pos'][0] == i[1][0]) and (G.node[vv]['pos'][1] == i[1][1]):
-                            G.add_edge(v, vv)
-            if j == 1:
-                for v in nx.nodes_iter(G):
-                    for vv in nx.nodes_iter(G):
-                        if (G.node[v]['pos'][0] == coords[0]) and (G.node[v]['pos'][1] == coords[1]) and (G.node[vv]['pos'][0] == i[2][0]) and (G.node[vv]['pos'][1] == i[2][1]):
-                            G.add_edge(v, vv)
-            if j == 2:
-                for v in nx.nodes_iter(G):
-                    for vv in nx.nodes_iter(G):
-                        if (G.node[v]['pos'][0] == coords[0]) and (G.node[v]['pos'][1] == coords[1]) and (G.node[vv]['pos'][0] == i[1][0]) and (G.node[vv]['pos'][0] == i[1][1]):
-                            G.add_edge(v, vv)
+        for j in range(0, 3):
+            k = (j + 1) % 3 
+            for v in nx.nodes_iter(G):
+                for vv in nx.nodes_iter(G):
+                    if (G.node[v]['pos'][0] == i[j][0]) and (G.node[v]['pos'][1] == i[j][1]) and (G.node[vv]['pos'][0] == i[k][0]) and (G.node[vv]['pos'][1] == i[k][1]):
+                        G.add_edge(v, vv)
     return G
 #################################
 #Binary class creation functions#
