@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 
 def drawVoronoi(G, classes, pos):
+    '''
+    Should draw the Voronoi diagram of G. 
+    NOT USABLE
+    '''
     points = np.zeros((nx.number_of_nodes(G), 2))
     for k, v in pos.items():
         points[k, :] = v
@@ -33,10 +37,11 @@ def drawVoronoi(G, classes, pos):
     #nx.draw_networkx(G, pos)
     plt.show()
 
-def drawFromClasses(G, pos): 
+def drawFromClasses(G): 
     '''
     Draws a binary graph with 2 different class in the 'class' attributes 
     '''
+    pos = nx.get_node_attributes(G, 'pos')
     classes = nx.get_node_attributes(G, 'class')
     black_nodes = [k for k, v in classes.items() if v == 0]
     white_nodes = [k for k, v in classes.items() if v == 1]
@@ -46,10 +51,11 @@ def drawFromClasses(G, pos):
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
 
-def drawDistanceGraph(G, pos):
+def drawDistanceGraph(G):
     '''
     Given a decimal graph (with attribute 'dist') it draws the distance graph using nodes with dist = 0 as basis
     '''
+    pos = nx.get_node_attributes(G, 'pos')
     dist = nx.get_node_attributes(G, 'dist')
     distRange = [v for k, v in dist.items() if v != float("inf")]
     distRange = list(set(distRange)) #kill duplicates

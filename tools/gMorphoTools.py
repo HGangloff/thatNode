@@ -10,15 +10,29 @@ from collections import deque
 class BreakTwoLoops( Exception ):
     pass
 
+################################
+#Graph position setup functions#
+################################
+def random_pos(G):
+    '''
+    Set random positions for G nodes according to networkx algorithm 
+    AND add position to 'pos' property of nodes
+    '''
+    pos = nx.random_layout(G)
+    nx.set_node_attributes(G, 'pos', pos)
+
 ###########################
 #Edges creations functions#
 ###########################
 def knn(G, k):
+    '''
+    Create edges to G according to the k nearest neighbours algorith
+    This is dependent on distance between nodes, so dependent on the 'pos' attribute
+    '''
     for v in nx.nodes_iter(G):
         for vv in nx.nodes_iter(G):
             if v != vv and (G.node[vv]['pos'][0] - G.node[v]['pos'][0])**2 + (G.node[vv]['pos'][1] - G.node[v]['pos'][1])**2 < k**2:
                 G.add_edge(v, vv)
-    return G
 
 def delaunay(G):
     '''
@@ -39,26 +53,26 @@ def delaunay(G):
                 for vv in nx.nodes_iter(G):
                     if (G.node[v]['pos'][0] == i[j][0]) and (G.node[v]['pos'][1] == i[j][1]) and (G.node[vv]['pos'][0] == i[k][0]) and (G.node[vv]['pos'][1] == i[k][1]):
                         G.add_edge(v, vv)
-    return G
+
 #################################
 #Binary class creation functions#
 #################################
-def oneOfTwo(G, N):
+def oneOfTwo(G):
     '''
     Create a binary graph with 50% nodes in one class and 50% nodes in another
     G is the graph
     N is the size of the graph
     
-    Returns the graph with a new attribute class.
-    Also returns 2 lists with the nodes numbers belonging to each class
+    Returns 2 lists with the nodes numbers belonging to each class
     '''
+    N = nx.number_of_nodes(G)
     classes = {i:j for i in range(0, N) for j in range(0, 2) if i % 2 == j}
     nx.set_node_attributes(G, 'class', classes)
     foreground = [k for k,v in classes.items() if v == 1]
     background = [k for k,v in classes.items() if v == 0]
-    return (G, foreground, background)
+    return (foreground, background)
 
-def oneVAll(G, N, thatNode = None):
+def oneVAll(G, thatNode = None):
     '''
     Create a binary graph : only one node is in the 'opposite' class
     G is the graph
@@ -67,6 +81,7 @@ def oneVAll(G, N, thatNode = None):
     Returns the graph with a new attribute class.
     Also returns 2 lists with the nodes numbers belonging to each class
     '''
+    N = nx.number_of_nodes(G)
     if not thatNode:
         thatNode = N // 2
     classes = {}
@@ -78,9 +93,9 @@ def oneVAll(G, N, thatNode = None):
     nx.set_node_attributes(G, 'class', classes)
     foreground = [k for k,v in classes.items() if v == 1]
     background = [k for k,v in classes.items() if v == 0]
-    return (G, foreground, background)
+    return (foreground, background)
 
-def connectedComponents(G, N, number, size):
+def connectedComponents(G, number, size):
     '''
     Create some connected components in a binary graph.
     G is the graph
@@ -94,6 +109,7 @@ def connectedComponents(G, N, number, size):
     Each different connected component are created with different class value
     But then all class values != 0 are set to 1 (binary graph)
     '''
+    N = nx.number_of_nodes(G)
     classes = {N:0 for N in range(0, N)}
     n = 1
     while n <= number:
@@ -119,7 +135,7 @@ def connectedComponents(G, N, number, size):
     nx.set_node_attributes(G, 'class', classes)
     foreground = [k for k,v in classes.items() if v == 1]
     background = [k for k,v in classes.items() if v == 0]
-    return (G, foreground, background)
+    return (foreground, background)
 
     
 
@@ -196,13 +212,14 @@ def opening(G, order, pos = None):
         dt.drawFromClasses(G, pos)
     return G
 
-def distGraph(Gin, fromNodeNumber, N):
+def distGraph(Gin, fromNodeNumber):
     '''
     Based on Dijkstra algorithm. Assuming that 2 neighbor nodes have a distance = 1
     fromNodeNumber is a list!
     N is the size of the graph
     Returns a decimal graph (same graph but with attribute 'dist' in fact) from a binary graph
-    '''
+    ''' 
+    N = nx.number_of_nodes(Gin)
     Gout = Gin.copy()
     distGout = [float("inf") for N in range(0, N)]
     for v in fromNodeNumber:
@@ -222,12 +239,13 @@ def distGraph(Gin, fromNodeNumber, N):
     
     return Gout
 
-def skeletizeRaw(Gin, N, nodesToSkeletize, otherNodes = None):
+def skeletizeRaw(Gin, nodesToSkeletize, otherNodes = None):
     '''
     This will compute and return the skeleton of a binary graph Gin
     This is done by computing the distance function from our element to the background nodes and then by finding local extremum in distance graph. 
     If background nodes are given they are computed here.
     '''
+    N = nx.number_of_nodes(Gin)
     if not otherNodes:
         otherNodes = [n for n in range(0, N) if (n not in nodesToSkeletize)]
     
@@ -243,12 +261,13 @@ def skeletizeRaw(Gin, N, nodesToSkeletize, otherNodes = None):
     
     return Gout
 
-def reconstruct(G, Gmark, N):
+def reconstruct(G, Gmark):
     '''
     Compute the reconstruction of graph G with markers from graph Gmark
     G is the original graph
     Gmark is the graph with markers (same structure as G)
     '''
+    N = nx.number_of_nodes(G)
     Gout = G.copy()
     for v in nx.nodes_iter(Gout):
         Gout.node[v]['class'] = 0
