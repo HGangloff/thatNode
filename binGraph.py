@@ -11,10 +11,9 @@ G = nx.empty_graph(N)
 
 gmt.random_pos(G)
 gmt.delaunay(G)
-foreground, background = gmt.connectedComponents(G, 1, 30)
+foreground, background = gmt.connectedComponents(G, 1, 50)
 dt.drawFromClasses(G)
-dilG = gmt.simpleDilation(G, True)
-gradG = bo.binarySub(dilG, G)
+gradG = gmt.externalGradient(G) 
 dt.drawFromClasses(gradG)
 '''
 #Lets test the reconstruction

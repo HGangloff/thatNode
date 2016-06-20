@@ -117,7 +117,6 @@ def connectedComponents(G, number, size):
         G.node[n * (N // number) - 1]['class'] = n
         i = 1
         while i < size:
-            print("A")
             try:
                 for v in nx.nodes_iter(G):
                     if G.node[v]['class'] == n:
@@ -291,3 +290,7 @@ def reconstruct(G, Gmark):
                 if not Gmark.node[vv]['seen']:
                     q.appendleft(vv)
     return Gout
+
+def externalGradient(G):
+    dilG = simpleDilation(G)
+    return bo.binarySub(dilG, G)
