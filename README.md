@@ -6,4 +6,4 @@ thatNode is based on the research paper : GRAPHS AND MATHEMATICAL MORPHOLOGY by 
 Keywords : Mathematical Morphology, Graphs, Graph Morphology, Python, Networkx
 
 
-Operators implemented so far : erosion, dilatation, opening, closing, skeleton
+Operators implemented so far : erosion, dilatation, opening, closing, skeleton, geodesic reconstruction
