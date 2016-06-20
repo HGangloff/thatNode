@@ -2,6 +2,7 @@ import numpy as np
 import networkx as nx
 import tools.drawTools as dt
 import tools.gMorphoTools as gmt
+import tools.binaryOperators as bo
 
 N = 100
 
@@ -10,8 +11,12 @@ G = nx.empty_graph(N)
 
 gmt.random_pos(G)
 gmt.delaunay(G)
-foreground, background = gmt.connectedComponents(G, 2, 5)
-
+foreground, background = gmt.connectedComponents(G, 1, 30)
+dt.drawFromClasses(G)
+dilG = gmt.simpleDilation(G, True)
+gradG = bo.binarySub(dilG, G)
+dt.drawFromClasses(gradG)
+'''
 #Lets test the reconstruction
 Gmark = G.copy()
 for v in nx.nodes_iter(Gmark):
@@ -21,3 +26,4 @@ dt.drawFromClasses(G)
 dt.drawFromClasses(Gmark)
 G2 = gmt.reconstruct(G, Gmark)
 dt.drawFromClasses(G2)
+'''

@@ -111,28 +111,31 @@ def connectedComponents(G, number, size):
     '''
     N = nx.number_of_nodes(G)
     classes = {N:0 for N in range(0, N)}
+    nx.set_node_attributes(G, 'class', classes)
     n = 1
     while n <= number:
-        classes[n * (N // number) - 1] = n
+        G.node[n * (N // number) - 1]['class'] = n
         i = 1
-        if i < size:
+        while i < size:
+            print("A")
             try:
                 for v in nx.nodes_iter(G):
-                    if classes[v] == n:
+                    if G.node[v]['class'] == n:
                         for vv in nx.all_neighbors(G, v):
-                            if classes[vv] not in range(1, n):
-                                classes[vv] = n
+                            if G.node[vv]['class'] not in range(1, n + 1):
+                                G.node[vv]['class'] = n
                                 i += 1
                                 if i == size:
                                     raise BreakTwoLoops
             except BreakTwoLoops:
                 pass
+
         n += 1
     
-    for k, v in classes.items():
-        if v > 0:
-            classes[k] = 1
-    nx.set_node_attributes(G, 'class', classes)
+    #Because we make a binary graph :
+    for v in nx.nodes_iter(G): 
+        if G.node[v]['class'] > 0:
+            G.node[v]['class'] = 1
     foreground = [k for k,v in classes.items() if v == 1]
     background = [k for k,v in classes.items() if v == 0]
     return (foreground, background)
@@ -287,5 +290,4 @@ def reconstruct(G, Gmark):
             for vv in nx.all_neighbors(G, v): 
                 if not Gmark.node[vv]['seen']:
                     q.appendleft(vv)
-
     return Gout
