@@ -3,6 +3,7 @@ import numpy as np
 import tools.drawTools as dt
 import tools.binaryOperators as bo
 from scipy.spatial import Delaunay
+from collections import deque
 ###########
 #Exception#
 ###########
@@ -242,3 +243,30 @@ def skeletizeRaw(Gin, N, nodesToSkeletize, otherNodes = None):
     
     return Gout
 
+def reconstruct(G, Gmark, N):
+    '''
+    Compute the reconstruction of graph G with markers from graph Gmark
+    G is the original graph
+    Gmark is the graph with markers (same structure as G)
+    '''
+    Gout = G.copy()
+    for v in nx.nodes_iter(Gout):
+        Gout.node[v]['class'] = 0
+    
+    q = deque()
+    seen = {n:False for n in range(0, N)}
+    nx.set_node_attributes(Gmark, 'seen', seen)
+    
+    for v in nx.nodes_iter(Gmark):
+        if Gmark.node[v]['class'] == 1:
+            q.appendleft(v)
+    while q:
+        v = q.pop()
+        if G.node[v]['class'] == 1:
+            Gout.node[v]['class'] = 1
+            Gmark.node[v]['seen'] = True
+            for vv in nx.all_neighbors(G, v): 
+                if not Gmark.node[vv]['seen']:
+                    q.appendleft(vv)
+
+    return Gout
