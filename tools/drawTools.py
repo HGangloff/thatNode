@@ -95,3 +95,27 @@ def drawLabelledGraph(G):
         nx.draw_networkx_nodes(G, pos, thatNodes, node_color = (random(), random(), random()), linewidths = 0)
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
+
+def drawZoneofIGraph(G):
+    '''
+    Draw the zone of influences graph G which is a decimal graph. Also connected components are labelled differently in 'class' and the zone of influence is nodes whose 'class' is = -label
+    '''
+    pos = nx.get_node_attributes(G, 'pos')
+    dist = nx.get_node_attributes(G, 'dist')
+    lblDict = nx.get_node_attributes(G, 'class')
+    print(lblDict)
+    lblRange = lblDict[max(lblDict, key = lambda x: lblDict.get(x))]
+    nx.draw_networkx(G, pos, with_labels = False)
+    #Draws the nodes on the border of zones of influence
+    thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == 0]
+    nx.draw_networkx_nodes(G, pos, thatNodes, node_color = 'k', linewidths = 0)
+    #Draws the labelled nodes (part of connected comp) and their zones of I
+    for i in range(lblRange):
+        thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == (i + 1)]
+        theirZI = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == -(i + 1)]
+        color = (random(), random(), random())
+        nx.draw_networkx_nodes(G, pos, thatNodes, node_color = color, linewidths = 0)
+        nx.draw_networkx_nodes(G, pos, theirZI, node_color = color, linewidths = 0, alpha = 0.8)
+    nx.draw_networkx_edges(G, pos, edge_color = 'k')
+    plt.show()
+

@@ -13,6 +13,8 @@ dt.drawFromClasses(G)
 
 Glbl = gmt.label(G)
 dt.drawLabelledGraph(Glbl)
+Gzi = gmt.zonesOfInfluence(G)
+dt.drawZoneofIGraph(Gzi)
 
 '''
 #Test the reconstruction

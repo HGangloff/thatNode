@@ -305,6 +305,7 @@ def label(G):
     Given a binary graph G, it will create a decimal graph with another 'class' (label) for each connected component
     This algorithm uses the principle of reconstruction
     '''
+    print("Computing a labelling...")
     N = nx.number_of_nodes(G)
     
     Gout = G.copy() #Thus, all that should be of class 0 in Gout is already ok
@@ -344,4 +345,39 @@ def symetricalGradient(G):
 
 def laplacian(G):
     return bo.binarySub(externalGradient(G), internalGradient(G))
+
+def zonesOfInfluence(G):
+    '''
+    Given a binary graph G, compute the zones of influence of eachof its connected components
+    -We note each connected component by labelling
+    -We compute distgraph for all connected components
+    -For all nodes not in a connected component we seek for the min distance
+    -If a node is at equal distance from 2 connected components, the node belongs to none
+    '''
+    print('Computing zones of influence...')
+    Glbl = label(G)
+    Gzi = Glbl.copy()
+    lblDict = nx.get_node_attributes(Glbl, 'class')
+    lblRange = lblDict[max(lblDict, key = lambda x: lblDict.get(x))]
+    distGraphList = []
+    for i in range(lblRange):
+        thatNodes = [v for v in nx.nodes_iter(Glbl) if Glbl.node[v]['class'] == (i + 1)]
+        distGraphList.append(distGraph(Glbl, thatNodes))
+    for v in nx.nodes_iter(Glbl):
+        if Glbl.node[v]['class'] == 0:
+            distances = []
+            minIsTwiceOrMore = False
+            for i in range(lblRange):
+                distances.append(distGraphList[i].node[v]['dist'])
+            
+            #Check if element at equal min dist
+            m = min(distances) #returns the value
+            mm = distances.index(m)
+            distances.remove(m)
+            if m in distances: #if it is still in the list...
+                minIsTwiceOrMore = True
+
+            if not minIsTwiceOrMore: #if element appears twice or more ie node at equal distance from 2 conn comp
+                Gzi.node[v]['class'] = -(mm + 1)
+    return Gzi
 
