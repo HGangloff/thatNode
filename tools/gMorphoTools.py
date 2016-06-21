@@ -300,6 +300,39 @@ def reconstruct(G, Gmark):
                     q.appendleft(vv)
     return Gout
 
+def label(G):
+    '''
+    Given a binary graph G, it will create a decimal graph with another 'class' (label) for each connected component
+    This algorithm uses the principle of reconstruction
+    '''
+    N = nx.number_of_nodes(G)
+    
+    Gout = G.copy() #Thus, all that should be of class 0 in Gout is already ok
+    
+    q = deque()
+    seen = {n:False for n in range(0, N)}
+    nx.set_node_attributes(G, 'seen', seen)
+    lbl = 0
+
+    for v in nx.nodes_iter(G):
+        if G.node[v]['class'] == 0:
+            G.node[v]['seen'] = True
+        elif G.node[v]['seen'] == False:
+            lbl += 1
+            G.node[v]['seen'] = True
+            q.appendleft(v)
+            while q:
+                vv = q.pop()
+                if G.node[vv]['class'] == 1:
+                    Gout.node[vv]['class'] = lbl
+                    G.node[vv]['seen'] = True
+                    for vvv in nx.all_neighbors(G, vv):
+                        if not G.node[vvv]['seen']:
+                            q.appendleft(vvv)
+    print("Labelling result : Number of connected components : " + str(lbl))
+    return Gout
+
+
 def externalGradient(G):
     return bo.binarySub(simpleDilation(G), G)
 
