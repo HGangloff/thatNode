@@ -1,13 +1,9 @@
-import numpy as np
-import networkx as nx
 import tools.drawTools as dt
 import tools.gMorphoTools as gmt
-import tools.binaryOperators as bo
 
 N = 100
 
-#Graph with no edges
-G = nx.empty_graph(N)
+G = gmt.noEdgeGraph(N)
 
 gmt.random_pos(G)
 gmt.delaunay(G)

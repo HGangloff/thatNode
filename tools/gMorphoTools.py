@@ -10,6 +10,15 @@ from collections import deque
 class BreakTwoLoops( Exception ):
     pass
 
+#########################
+#Graph creation function#
+#########################
+def noEdgeGraph(numberOfNodes):
+    '''
+    Returns an empty graph ie, with no edges, with the required number of nodes
+    '''
+    return nx.empty_graph(numberOfNodes)
+
 ################################
 #Graph position setup functions#
 ################################
