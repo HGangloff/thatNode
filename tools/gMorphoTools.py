@@ -301,5 +301,14 @@ def reconstruct(G, Gmark):
     return Gout
 
 def externalGradient(G):
-    dilG = simpleDilation(G)
-    return bo.binarySub(dilG, G)
+    return bo.binarySub(simpleDilation(G), G)
+
+def internalGradient(G):
+    return bo.binarySub(G, simpleErosion(G))
+
+def symetricalGradient(G):
+    return bo.binarySub(simpleDilation(G), simpleErosion(G))
+
+def laplacian(G):
+    return bo.binarySub(externalGradient(G), internalGradient(G))
+
