@@ -84,7 +84,7 @@ def drawLabelledGraph(G):
     pos = nx.get_node_attributes(G, 'pos')
     dist = nx.get_node_attributes(G, 'dist')
     lblDict = nx.get_node_attributes(G, 'class')
-    lblRange = max(lblDict, key = lambda x: lblDict.get(x))
+    lblRange = lblDict[max(lblDict, key = lambda x: lblDict.get(x))]
     nx.draw_networkx(G, pos, with_labels = False)
     #Draws the nodes with no label
     thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == 0]
