@@ -12,6 +12,7 @@ foreground, background = gmt.connectedComponents(G, 5, 2)
 dt.drawFromClasses(G)
 
 Glbl = gmt.label(G)
+dt.drawLabelledGraph(Glbl)
 
 '''
 #Test the reconstruction

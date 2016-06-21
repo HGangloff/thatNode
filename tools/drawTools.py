@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+from random import random
 from scipy.spatial import Voronoi, voronoi_plot_2d
 
 def drawVoronoi(G, classes, pos):
@@ -40,14 +41,15 @@ def drawVoronoi(G, classes, pos):
 def drawFromClasses(G): 
     '''
     Draws a binary graph with 2 different class in the 'class' attributes 
+    TO DO : Rename in "drawBinaryGraph"
     '''
     pos = nx.get_node_attributes(G, 'pos')
     classes = nx.get_node_attributes(G, 'class')
     black_nodes = [k for k, v in classes.items() if v == 0]
     white_nodes = [k for k, v in classes.items() if v == 1]
     nx.draw_networkx(G, pos, with_labels = False)
-    nx.draw_networkx_nodes(G, pos, black_nodes, node_color = '0.2', linewidths = 0)
-    nx.draw_networkx_nodes(G, pos, white_nodes, node_color = 'y', linewidths = 0)
+    nx.draw_networkx_nodes(G, pos, black_nodes, node_color = '0', linewidths = 0)
+    nx.draw_networkx_nodes(G, pos, white_nodes, node_color = '1', linewidths = 0)
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
 
@@ -72,5 +74,24 @@ def drawDistanceGraph(G):
     thatStartNodes = [k for k in nx.nodes_iter(G) if G.node[k]['dist'] == 0]
     nx.draw_networkx_nodes(G, pos, thatStartNodes, node_color = 'y', linewidths = 0)
 
+    nx.draw_networkx_edges(G, pos, edge_color = 'k')
+    plt.show()
+
+def drawLabelledGraph(G):
+    '''
+    Given a decimal graph G it draws theconnected components (labels, or 'class' =/= 0) using different colors
+    '''
+    pos = nx.get_node_attributes(G, 'pos')
+    dist = nx.get_node_attributes(G, 'dist')
+    lblDict = nx.get_node_attributes(G, 'class')
+    lblRange = max(lblDict, key = lambda x: lblDict.get(x))
+    nx.draw_networkx(G, pos, with_labels = False)
+    #Draws the nodes with no label
+    thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == 0]
+    nx.draw_networkx_nodes(G, pos, thatNodes, node_color = 'k', linewidths = 0)
+    #Draws the labelled nodes
+    for i in range(lblRange):
+        thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == (i + 1)]
+        nx.draw_networkx_nodes(G, pos, thatNodes, node_color = (random(), random(), random()), linewidths = 0)
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
