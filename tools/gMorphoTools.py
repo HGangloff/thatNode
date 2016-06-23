@@ -144,8 +144,8 @@ def connectedComponents(G, number, size):
     for v in nx.nodes_iter(G): 
         if G.node[v]['class'] > 0:
             G.node[v]['class'] = 1
-    foreground = [k for k,v in classes.items() if v == 1]
-    background = [k for k,v in classes.items() if v == 0]
+    foreground = [k for k,v in nx.get_node_attributes(G, 'class').items() if v == 1]
+    background = [k for k,v in nx.get_node_attributes(G, 'class').items() if v == 0]
     return (foreground, background)
 
     
