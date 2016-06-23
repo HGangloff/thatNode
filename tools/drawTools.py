@@ -113,9 +113,13 @@ def drawZoneofIGraph(G):
     for i in range(lblRange):
         thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == (i + 1)]
         theirZI = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == -(i + 1)]
-        color = (random(), random(), random())
+        r = random()
+        v = random()
+        b = random()
+        color = (r, v, b)
+        color2 = (min(r + 0.3, 1), min(v + 0.3, 1), min(b + 0.3, 1))
         nx.draw_networkx_nodes(G, pos, thatNodes, node_color = color, linewidths = 0)
-        nx.draw_networkx_nodes(G, pos, theirZI, node_color = color, linewidths = 0, alpha = 0.8)
+        nx.draw_networkx_nodes(G, pos, theirZI, node_color = color2, linewidths = 0)
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
 

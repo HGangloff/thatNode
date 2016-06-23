@@ -8,7 +8,7 @@ gmt.random_pos(G)
 gmt.delaunay(G)
 
 
-foreground, background = gmt.connectedComponents(G, 5, 2)
+foreground, background = gmt.connectedComponents(G, 2, 2)
 dt.drawFromClasses(G)
 
 Glbl = gmt.label(G)
