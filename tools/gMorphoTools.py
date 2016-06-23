@@ -305,7 +305,6 @@ def label(G):
     Given a binary graph G, it will create a decimal graph with another 'class' (label) for each connected component
     This algorithm uses the principle of reconstruction
     '''
-    print("Computing a labelling...")
     N = nx.number_of_nodes(G)
     
     Gout = G.copy() #Thus, all that should be of class 0 in Gout is already ok
@@ -354,7 +353,6 @@ def zonesOfInfluence(G):
     -For all nodes not in a connected component we seek for the min distance
     -If a node is at equal distance from 2 connected components, the node belongs to none
     '''
-    print('Computing zones of influence...')
     Glbl = label(G)
     Gzi = Glbl.copy()
     lblDict = nx.get_node_attributes(Glbl, 'class')

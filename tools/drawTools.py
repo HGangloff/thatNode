@@ -57,7 +57,11 @@ def drawLabelledGraph(G):
     #Draws the labelled nodes
     for i in range(lblRange):
         thatNodes = [k for k in nx.nodes_iter(G) if G.node[k]['class'] == (i + 1)]
-        nx.draw_networkx_nodes(G, pos, thatNodes, node_color = (random(), random(), random()), linewidths = 0)
+        r = random()
+        v = random()
+        b = random()
+        color = (r, v, b) #bad coloring if connected component of size 3
+        nx.draw_networkx_nodes(G, pos, thatNodes, node_color = color, linewidths = 0)
     nx.draw_networkx_edges(G, pos, edge_color = 'k')
     plt.show()
 
@@ -68,7 +72,6 @@ def drawZoneofIGraph(G):
     pos = nx.get_node_attributes(G, 'pos')
     dist = nx.get_node_attributes(G, 'dist')
     lblDict = nx.get_node_attributes(G, 'class')
-    print(lblDict)
     lblRange = lblDict[max(lblDict, key = lambda x: lblDict.get(x))]
     nx.draw_networkx(G, pos, with_labels = False)
     #Draws the nodes on the border of zones of influence
