@@ -19,6 +19,7 @@ Currently, thatNode provides a set of binary graph operators :
 * symetrical gradient
 * internal gradient
 * external gradient
+
 For an complete overview of these operators, just download and run binGraphExamples.py :
 ```python
 python3 binGraphExamples.py
