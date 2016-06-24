@@ -1,3 +1,5 @@
 ignoreFiles/
 __pycache__/
 *.swp
+binGraphTest.py
+
