@@ -160,9 +160,10 @@ def simpleDilation(Gin):
 
     Gout = Gin.copy()
     for v in nx.nodes_iter(Gin):
-        for vv in nx.all_neighbors(Gin, v):
-            if Gin.node[v]['class'] < Gin.node[vv]['class']:
-                Gout.node[v]['class'] = Gin.node[vv]['class']
+        if Gin.node[v]['class'] == 0: #Extensivity of dilatation
+            for vv in nx.all_neighbors(Gin, v):
+                if Gin.node[v]['class'] < Gin.node[vv]['class']:
+                    Gout.node[v]['class'] = Gin.node[vv]['class']
     return Gout
 
 def dilatation(G, order):
@@ -183,9 +184,10 @@ def simpleErosion(Gin):
 
     Gout = Gin.copy()
     for v in nx.nodes_iter(Gin):
-        for vv in nx.all_neighbors(Gin, v):
-            if Gin.node[v]['class'] > Gin.node[vv]['class']:
-                Gout.node[v]['class'] = Gin.node[vv]['class']
+        if Gin.node[v]['class'] == 1: #Anti-extensivity of erosion
+            for vv in nx.all_neighbors(Gin, v):
+                if Gin.node[v]['class'] > Gin.node[vv]['class']:
+                    Gout.node[v]['class'] = Gin.node[vv]['class']
     return Gout
 
 def erosion(G, order):
