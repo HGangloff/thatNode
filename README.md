@@ -45,7 +45,7 @@ import tools.gMorphoTools as gmt
 ...soon...
 
 ## Under development
-*
+* Improvement of existing algorithms
 
 ## More precisely on graph Morphology
 Mathematical morphology is a useful tool to extract data from a certain structure. It is well-known in image analysis. It has been extended to graphs in the late 80s.

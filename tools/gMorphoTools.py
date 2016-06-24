@@ -1,6 +1,5 @@
 import networkx as nx
 import numpy as np
-import tools.drawTools as dt
 import tools.binaryOperators as bo
 from scipy.spatial import Delaunay
 from collections import deque
@@ -154,7 +153,7 @@ def connectedComponents(G, number, size):
 #Morphological operations tools#
 ################################
 
-def simpleDilation(Gin, draw = None):
+def simpleDilation(Gin):
     '''
     Performs a simple dilatation. If draw is True, it will directly display the result
     '''
@@ -164,21 +163,19 @@ def simpleDilation(Gin, draw = None):
         for vv in nx.all_neighbors(Gin, v):
             if Gin.node[v]['class'] < Gin.node[vv]['class']:
                 Gout.node[v]['class'] = Gin.node[vv]['class']
-    if draw:
-        dt.drawFromClasses(Gout)
     return Gout
 
-def dilatation(G, order, draw = None):
+def dilatation(G, order):
     '''
     Enables multiple dilatations in a row. 
     If draw is given, it will directly display the result
     '''
 
     for k in range(1, order + 1):
-        G = simpleDilation(G, draw)
+        G = simpleDilation(G)
     return G
 
-def simpleErosion(Gin, draw = None):
+def simpleErosion(Gin):
     '''
     Performs a simple erosion
     If draw is given, it will directly display the result
@@ -189,38 +186,32 @@ def simpleErosion(Gin, draw = None):
         for vv in nx.all_neighbors(Gin, v):
             if Gin.node[v]['class'] > Gin.node[vv]['class']:
                 Gout.node[v]['class'] = Gin.node[vv]['class']
-    if draw:
-        dt.drawFromClasses(Gout)
     return Gout
 
-def erosion(G, order, draw = None):
+def erosion(G, order):
     '''
     Enable multiple erosions in a row
     If draw is given, it will directly display the result
     '''
 
     for k in range(1, order + 1):
-        G = simpleErosion(G, draw)
+        G = simpleErosion(G)
     return G
 
-def closing(G, order, draw = None):
+def closing(G, order):
     '''
     Using the fact that a closing in the composition of a dilatation by an erosion
     '''
     G = dilatation(G, order)
     G = erosion(G, order)
-    if draw:
-        dt.drawFromClasses(G, draw)
     return G
 
-def opening(G, order, draw = None):
+def opening(G, order):
     '''
     Using the fact that an opening is tha composition of an erosion by a dilatation
     '''
     G = erosion(G, order)
     G = dilatation(G, order)
-    if draw:
-        dt.drawFromClasses(G, draw)
     return G
 
 def distGraph(Gin, fromNodeNumber):
